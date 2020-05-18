@@ -51,8 +51,12 @@ quizRouter.route('/:quizId')
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'text/plain');
                 var html = "<p style = 'text-align: center'><b>" + quiz.name + "</b></p><b>Instructions: </b>" + quiz.instructions + "<br><hr>";
+                var num = 1;
                 for (var i = 0; i < quiz.questions.length; i++) {
-                  html = html + (i+1) + ". " + quiz.questions[i].question + "<br><div style = 'margin: 10px'>";
+                  if (!quiz.questions[i].isEnabled)
+                      continue;
+                  html = html + num + ". " + quiz.questions[i].question + "  -  " + quiz.questions[i]._id + "<br><div style = 'margin: 10px'>";
+                  num = num + 1;
                   for (var j = 0; j < quiz.questions[i].answers.length; j++) {
                     html = html + (j+1) + ". " + quiz.questions[i].answers[j].option + "<br>";
                   }
@@ -186,9 +190,9 @@ quizRouter.route('/:quizId/questions/:questionId')
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
                 if (quiz != null && quiz.questions.id(req.params.questionId) != null) {
-                    if (req.body.isEnabled) {
+
                         quiz.questions.id(req.params.questionId).isEnabled = req.body.isEnabled;
-                    }
+                    
                     quiz.save()
                         .then((quiz) => {
                             Quizes.findById(quiz._id)
