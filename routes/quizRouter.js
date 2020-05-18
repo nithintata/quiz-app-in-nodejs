@@ -10,11 +10,14 @@ quizRouter.use(bodyParser.json());
 
 quizRouter.route('/')
     .get((req, res, next) => {
-        Quizes.find({})
+        Quizes.find({isEnabled : true})
             .then((quizes) => {
                 res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(quizes);
+                res.setHeader('Content-Type', 'text/plain');
+                var text = "";
+                for (var i = 0; i < quizes.length; i++)
+                   text = text + "<b>Name: </b>" + quizes[i].name + "<br>" + "<b>id:</b> " + quizes[i]._id + "<br><hr>";
+                res.end(text);
             }, (err) => next(err))
             .catch((err) => next(err));
     })
@@ -46,8 +49,16 @@ quizRouter.route('/:quizId')
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
                 res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(quiz);
+                res.setHeader('Content-Type', 'text/plain');
+                var html = "<p style = 'text-align: center'><b>" + quiz.name + "</b></p><b>Instructions: </b>" + quiz.instructions + "<br><hr>";
+                for (var i = 0; i < quiz.questions.length; i++) {
+                  html = html + (i+1) + ". " + quiz.questions[i].question + "<br><div style = 'margin: 10px'>";
+                  for (var j = 0; j < quiz.questions[i].answers.length; j++) {
+                    html = html + (j+1) + ". " + quiz.questions[i].answers[j].option + "<br>";
+                  }
+                  html = html + "</div><hr>";
+                }
+                res.end(html);
             }, (err) => next(err)).catch((err) => next(err));
     })
     .post((req, res, next) => {
@@ -175,11 +186,8 @@ quizRouter.route('/:quizId/questions/:questionId')
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
                 if (quiz != null && quiz.questions.id(req.params.questionId) != null) {
-                    if (req.body.rating) {
-                        quiz.questions.id(req.params.questionId).rating = req.body.rating;
-                    }
-                    if (req.body.question) {
-                        quiz.questions.id(req.params.questionId).question = req.body.question;
+                    if (req.body.isEnabled) {
+                        quiz.questions.id(req.params.questionId).isEnabled = req.body.isEnabled;
                     }
                     quiz.save()
                         .then((quiz) => {
