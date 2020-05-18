@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+var authenticate = require('../authenticate');
 
 const Quizes = require("../models/quizes");
 
@@ -21,7 +21,7 @@ quizRouter.route('/')
             }, (err) => next(err))
             .catch((err) => next(err));
     })
-    .post((req, res, next) => {
+    .post(authenticate.verifyUser, (req, res, next) => {
         Quizes.create(req.body)
             .then((quiz) => {
                 console.log('Quiz Created: ', quiz);
@@ -34,7 +34,7 @@ quizRouter.route('/')
         res.statusCode = 403 /*Not supported*/
         res.end('PUT operation not supported on /quizes');
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyUser, (req, res, next) => {
         Quizes.remove({})
             .then((resp) => {
                 res.statusCode = 200;
@@ -71,7 +71,7 @@ quizRouter.route('/:quizId')
         res.end('POST operation not supported on /quizes/'
             + req.params.quizId);
     })
-    .put((req, res, next) => {
+    .put(authenticate.verifyUser, (req, res, next) => {
         Quizes.findByIdAndUpdate(req.params.quizId, {
             $set: req.body
         }, { new: true })
@@ -81,7 +81,7 @@ quizRouter.route('/:quizId')
                 res.json(quiz);
             }, (err) => next(err)).catch((err) => next(err));
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyUser, (req, res, next) => {
         Quizes.findByIdAndRemove(req.params.quizId)
             .then((quiz) => {
                 res.statusCode = 200;
@@ -111,7 +111,7 @@ quizRouter.route('/:quizId/questions')
                 }
             }, (err) => next(err)).catch((err) => next(err));
     })
-    .post((req, res, next) => {
+    .post(authenticate.verifyUser, (req, res, next) => {
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
                 if (quiz != null) {
@@ -138,7 +138,7 @@ quizRouter.route('/:quizId/questions')
         res.end('PUT operation not supported on /quizes'
             + req.params.quizId + '/questions');
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyUser, (req, res, next) => {
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
                 if (quiz != null) {
@@ -187,7 +187,7 @@ quizRouter.route('/:quizId/questions/:questionId')
         res.end('POST operation not supported on /quizes/'
             + req.params.quizId + '/questions' + req.params.questionId);
     })
-    .put((req, res, next) => {
+    .put(authenticate.verifyUser, (req, res, next) => {
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
 
@@ -226,7 +226,7 @@ quizRouter.route('/:quizId/questions/:questionId')
                 }
             }, (err) => next(err)).catch((err) => next(err));
     })
-    .delete((req, res, next) => {
+    .delete(authenticate.verifyUser, (req, res, next) => {
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
                 if (quiz != null && quiz.questions.id(req.params.questionId) != null) {
