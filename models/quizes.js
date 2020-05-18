@@ -23,6 +23,11 @@ const questionSchema = new Schema({
     isEnabled: {
         type: Boolean,
         default: true
+    },
+
+    explanation:{
+      type: String,
+      default: ""
     }
 
 }, {
@@ -45,7 +50,25 @@ const quizSchema = new Schema({
         default: true
     },
 
-    questions: [questionSchema]
+    questions: [questionSchema],
+
+    duration :{
+      hours : {
+        type : Number,
+        default: 0
+      },
+
+      minutes : {
+        type : Number,
+        default: 0
+      },
+
+      seconds : {
+        type : Number,
+        default: 0
+      }
+
+    }
 }, {
     timestamps: true
 });

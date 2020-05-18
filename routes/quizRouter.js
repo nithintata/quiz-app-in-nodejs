@@ -50,7 +50,8 @@ quizRouter.route('/:quizId')
             .then((quiz) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'text/plain');
-                var html = "<p style = 'text-align: center'><b>" + quiz.name + "</b></p><b>Instructions: </b>" + quiz.instructions + "<br><hr>";
+                var html = "<p style = 'text-align: center'><b>" + quiz.name + "</b></p><b>Instructions: </b>" + quiz.instructions + "<br>";
+                html = html + "<b>Duration: </b>" + quiz.duration.hours + ":" + quiz.duration.minutes + ":" + quiz.duration.seconds + "<hr>";
                 var num = 1;
                 for (var i = 0; i < quiz.questions.length; i++) {
                   if (!quiz.questions[i].isEnabled)
@@ -60,7 +61,7 @@ quizRouter.route('/:quizId')
                   for (var j = 0; j < quiz.questions[i].answers.length; j++) {
                     html = html + (j+1) + ". " + quiz.questions[i].answers[j].option + "<br>";
                   }
-                  html = html + "</div><hr>";
+                  html = html + "</div><b> Answer: </b>" + quiz.questions[i].answer + "<br><b>Explanation: </b>" + quiz.questions[i].explanation + "<br><hr>";
                 }
                 res.end(html);
             }, (err) => next(err)).catch((err) => next(err));
@@ -189,17 +190,27 @@ quizRouter.route('/:quizId/questions/:questionId')
     .put((req, res, next) => {
         Quizes.findById(req.params.quizId)
             .then((quiz) => {
-                if (quiz != null && quiz.questions.id(req.params.questionId) != null) {
 
+                if (quiz != null && quiz.questions.id(req.params.questionId) != null) {
+                    if (req.body.question) {
+                        quiz.questions.id(req.params.questionId).question = req.body.question;
+                    }
+                    if (req.body.answers) {
+                        quiz.questions.id(req.params.questionId).answers = req.body.answers;
+                    }
+                    if (req.body.answer) {
+                        quiz.questions.id(req.params.questionId).answer = req.body.answer;
+                    }
+                    if (req.body.isEnabled != null) {
                         quiz.questions.id(req.params.questionId).isEnabled = req.body.isEnabled;
-                    
+                    }
                     quiz.save()
                         .then((quiz) => {
                             Quizes.findById(quiz._id)
                                 .then((quiz) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
-                                    res.json(quiz.questions);
+                                    res.json(quiz.questions.id(req.params.questionId));
                                 })
                         }, (err) => next(err));
                 }
@@ -223,7 +234,6 @@ quizRouter.route('/:quizId/questions/:questionId')
                     quiz.save()
                         .then((quiz) => {
                             Quizes.findById(quiz._id)
-                                .populate('questions.author')
                                 .then((quiz) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
