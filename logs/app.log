@@ -1,0 +1,3 @@
+{"message":"::1 - admin [19/May/2020:04:16:03 +0000] \"GET /quizes/ HTTP/1.1\" 200 - \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info"}
+{"message":"404 - Not Found - /are/ - GET - ::1","level":"error"}
+{"message":"::1 - admin [19/May/2020:04:16:20 +0000] \"GET /are/ HTTP/1.1\" 404 1633 \"-\" \"PostmanRuntime/7.24.1\"\n","level":"info"}
