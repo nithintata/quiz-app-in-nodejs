@@ -122,7 +122,7 @@ quizRouter.route('/:quizId/questions')
                                 .then((quiz) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
-                                    res.json(quiz.questions);
+                                    res.json(quiz);
                                 })
                         }, (err) => next(err));
                 }
@@ -237,7 +237,7 @@ quizRouter.route('/:quizId/questions/:questionId')
                                 .then((quiz) => {
                                     res.statusCode = 200;
                                     res.setHeader('Content-Type', 'application/json');
-                                    res.json(quiz.questions);
+                                    res.json(quiz);
                                 })
                         }, (err) => next(err));
                 }
