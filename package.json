@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test" : "mocha --recursive --exit"
+    "test": "mocha --recursive --exit"
   },
   "dependencies": {
     "chai": "^4.2.0",
@@ -13,7 +13,7 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
-    "mocha": "^7.1.2",
+    "mocha": "^7.2.0",
     "mockgoose": "^8.0.4",
     "mongoose": "^5.9.14",
     "morgan": "~1.9.1",
