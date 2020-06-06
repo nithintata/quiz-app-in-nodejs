@@ -9,7 +9,7 @@ describe('Unit tests for CRUD operations on different end points', () => {
 
   it('OK, cannot create a new Quiz without authorization', (done)=> {
     request(app).post('/quizes')
-    .send({"name":"My Quiz","instructions":"Instructions goes here","isEnabled":true,"questions":[{"question":"What is capital of AP","answers":[{"option":"new york"},{"option":"Bombay"},{"option":"Vijayawada"},{"option":"noida"}],"answer":2,"isEnabled":true,"explanation":"Something"},{"question":"What is capital of us","answers":[{"option":"new york"},{"option":"dc"},{"option":"qwer"},{"option":"mumbai"}],"answer":2,"isEnabled":true,"explanation":"Something"}],"duration":{"hours":10,"minutes":20,"seconds":30}})
+    .send({"name":"My Quiz10","instructions":"Instructions goes here","isEnabled":true,"questions":[{"question":"What is capital of AP","answers":[{"option":"new york"},{"option":"Bombay"},{"option":"Vijayawada"},{"option":"noida"}],"answer":2,"isEnabled":true,"explanation":"Something"},{"question":"What is capital of us","answers":[{"option":"new york"},{"option":"dc"},{"option":"qwer"},{"option":"mumbai"}],"answer":2,"isEnabled":true,"explanation":"Something"}],"duration":{"hours":10,"minutes":20,"seconds":30}})
     .then((res) => {
       const statusCode = res.statusCode
       expect(statusCode).equal(401);
