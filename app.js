@@ -10,6 +10,7 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const cors = require("cors");
 const compression = require("compression");
+const chalk = require("chalk");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
