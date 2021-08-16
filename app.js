@@ -26,15 +26,14 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   const con = await mongoose.connect(process.env.mongoUrl, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-    autoIndex: true,
+    useNewUrlParser : true,
+    useCreateIndex : true,
+    useFindAndModify : false,
+    useUnifiedTopology : true,
+    autoIndex : true,
   });
   console.log(
-    chalk.bgGreen.black(`MongoDB Connected: ${con.connection.host}.`)
-  );
+      chalk.bgGreen.black(`MongoDB Connected: ${con.connection.host}.`));
 };
 
 connectDB();
@@ -44,8 +43,8 @@ var app = express();
 app.enable("trust proxy");
 
 // Set Body parser, reading data from body into req.body
-app.use(express.json({ limit: "10kb" }));
-app.use(express.urlencoded({ extended: true, limit: "10kb" }));
+app.use(express.json({limit : "10kb"}));
+app.use(express.urlencoded({extended : true, limit : "10kb"}));
 
 // Set security HTTP headers
 app.use(helmet());
@@ -54,13 +53,13 @@ app.use(helmet());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
-app.use(morgan("combined", { stream: winston.stream }));
+app.use(morgan("combined", {stream : winston.stream}));
 
 // Limit requests from the same API
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  messege: "Too many requests from this IP, Please try again in an hour!",
+  max : 100,
+  windowMs : 60 * 60 * 1000,
+  messege : "Too many requests from this IP, Please try again in an hour!",
 });
 app.use("/", limiter);
 
@@ -89,25 +88,20 @@ app.use("/users", usersRouter);
 app.use("/quizes", quizRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+app.use(function(req, res, next) { next(createError(404)); });
 
 // error handler
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  winston.error(
-    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${
-      req.method
-    } - ${req.ip}`
-  );
+  winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${
+      req.method} - ${req.ip}`);
   // render the error page
   res.status(err.status || 500);
-  res.json({ err, message: err.message });
-  //res.render("error");
+  res.json({err, message : err.message});
+  // res.render("error");
 });
 
 module.exports = app;
