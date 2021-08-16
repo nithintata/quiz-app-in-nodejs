@@ -1,7 +1,6 @@
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
-const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const winston = require("./winston");
 const rateLimit = require("express-rate-limit");
@@ -12,20 +11,21 @@ const cors = require("cors");
 const compression = require("compression");
 const chalk = require("chalk");
 
+const passport = require("passport");
+
+const dotenv = require("dotenv");
+dotenv.config();
+
+const authenticate = require("./authenticate");
+
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const quizRouter = require("./routes/quizRouter");
-const config = require("./config");
 
 const mongoose = require("mongoose");
-const Quizes = require("./models/quizes");
-
-const DB = config.mongoUrl;
-
-mongoose.set("autoIndex", true);
 
 const connectDB = async () => {
-  const con = await mongoose.connect(DB, {
+  const con = await mongoose.connect(process.env.mongoUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -56,8 +56,6 @@ app.set("view engine", "jade");
 
 app.use(morgan("combined", { stream: winston.stream }));
 
-app.use(cookieParser("12345-67890"));
-
 // Limit requests from the same API
 const limiter = rateLimit({
   max: 100,
@@ -76,6 +74,8 @@ app.use(hpp());
 app.use(cors());
 
 app.options("*", cors());
+
+app.use(passport.initialize());
 
 app.use(compression());
 
@@ -106,7 +106,8 @@ app.use(function (err, req, res, next) {
   );
   // render the error page
   res.status(err.status || 500);
-  res.render("error");
+  res.json({ err, message: err.message });
+  // res.render("error");
 });
 
 module.exports = app;
