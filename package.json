@@ -7,7 +7,7 @@
     "test": "mocha --recursive --exit"
   },
   "dependencies": {
-    "chai": "^4.2.0",
+    "chai": "^4.3.10",
     "chalk": "^4.1.0",
     "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
